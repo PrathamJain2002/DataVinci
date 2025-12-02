@@ -3,6 +3,7 @@ FastAPI main application file.
 Configures the FastAPI app, CORS, and includes routers.
 """
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
@@ -19,14 +20,22 @@ app = FastAPI(
 )
 
 # Configure CORS
-# In production, replace "*" with your Vercel domain
-# Example: origins = ["https://your-app.vercel.app"]
-origins = [
-    "http://localhost:3000",  # Next.js dev server
-    "http://localhost:3001",  # Alternative port
-    "https://*.vercel.app",   # Vercel preview deployments
-    "*",  # Allow all origins (for development - restrict in production)
-]
+# Get allowed origins from environment variable, fallback to defaults
+# In Railway, set ALLOWED_ORIGINS environment variable like:
+# ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app,https://*.vercel.app
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+
+if allowed_origins_env:
+    # Split by comma and strip whitespace
+    origins = [origin.strip() for origin in allowed_origins_env.split(",")]
+else:
+    # Default origins for development
+    origins = [
+        "http://localhost:3000",  # Next.js dev server
+        "http://localhost:3001",  # Alternative port
+        "https://*.vercel.app",   # Vercel preview deployments
+        "*",  # Allow all origins (for development - restrict in production)
+    ]
 
 app.add_middleware(
     CORSMiddleware,
