@@ -21,7 +21,7 @@ app = FastAPI(
 
 # Configure CORS
 # Get allowed origins from environment variable, fallback to defaults
-# In Railway, set ALLOWED_ORIGINS environment variable like:
+# In Railway/Render, set ALLOWED_ORIGINS environment variable like:
 # ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app,https://*.vercel.app
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
 
